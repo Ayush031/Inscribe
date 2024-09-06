@@ -15,7 +15,12 @@ mongoose
 
 //middlewares
 app.use(
-  cors()
+  cors(
+    {
+      credentials: true,
+      origin: ["http://localhost:5173","https://inscribe-mu.vercel.app"],
+    }
+  )
 );
 
 // middleware
