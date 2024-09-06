@@ -10,7 +10,6 @@ const {
   getProfile,
 } = require("../controllers/authController");
 
-router.get("/", (req, res) => res.send("Backend Working"));
 router.get("/profile", getProfile);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
