@@ -15,10 +15,7 @@ mongoose
 
 //middlewares
 app.use(
-  cors({
-    credentials: true,
-    origin: [process.env.ORIGIN],
-  })
+  cors()
 );
 
 // middleware
