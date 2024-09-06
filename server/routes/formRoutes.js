@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-// Controller
 const {
   submitForm1,
   submitForm2,

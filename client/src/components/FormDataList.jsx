@@ -46,15 +46,14 @@ const FormDataList = () => {
     try {
       const response = await axios.get(
         `/user/generate-pdf-${selectedForm}/${id}/${selectedForm}`,
-        // {
-        //   responseType: "blob",
-        // }
+        {
+          responseType: "blob",
+        }
       );
-      console.log(selectedForm);
 
       if (selectedForm === "certificate") {
         const { images } = response.data;
-        // console.log(images);
+        console.log(images);
       }
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });

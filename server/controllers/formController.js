@@ -384,7 +384,7 @@ const generateCertificate = async (req, res) => {
     const options = {
       format: 'png',
       out_dir: imageOutputDir,
-      out_prefix: 'page',
+      out_prefix: `output_${user._id}`,
       page: null
     };
 
@@ -398,7 +398,6 @@ const generateCertificate = async (req, res) => {
   } catch (error) {
     res.status(500).send("Error generating or converting PDF: " + error.message);
   }
-
 };
 
 const generateGroupCertificates = async (req, res) => { };
