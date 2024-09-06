@@ -175,14 +175,21 @@ const form4Schema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+const certificateSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  date: { type: Date, required: true },
+});
+
 const formModel1 = mongoose.model("form1", form1Schema);
 const formModel2 = mongoose.model("form2", form2Schema);
 const formModel3 = mongoose.model("form3", form3Schema);
 const formModel4 = mongoose.model("form4", form4Schema);
+const certificateModel = mongoose.model('certificateModel', certificateSchema);
 
 module.exports = {
   formModel1,
   formModel2,
   formModel3,
   formModel4,
+  certificateModel
 };

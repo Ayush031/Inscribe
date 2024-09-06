@@ -46,10 +46,16 @@ const FormDataList = () => {
     try {
       const response = await axios.get(
         `/user/generate-pdf-${selectedForm}/${id}/${selectedForm}`,
-        {
-          responseType: "blob",
-        }
+        // {
+        //   responseType: "blob",
+        // }
       );
+      console.log(selectedForm);
+
+      if (selectedForm === "certificate") {
+        const { images } = response.data;
+        // console.log(images);
+      }
 
       const pdfBlob = new Blob([response.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
@@ -84,6 +90,7 @@ const FormDataList = () => {
               <SelectItem value="form4">
                 PROPOSAL FORM: FORMATION OF ENTITY
               </SelectItem>
+              <SelectItem value="certificate">Certificate</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

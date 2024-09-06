@@ -6,7 +6,10 @@ const {
   formModel2,
   formModel3,
   formModel4,
+  certificateModel,
 } = require("../models/form");
+
+const pdfPoppler = require('pdf-poppler');
 
 const submitForm1 = async (req, res) => {
   try {
@@ -18,7 +21,7 @@ const submitForm1 = async (req, res) => {
       ID: newUser._id,
     });
   } catch (error) {
-    console.error("Error details:", error); 
+    console.error("Error details:", error);
     res.status(500).send("Error saving user data: " + error.message);
   }
 };
@@ -67,6 +70,23 @@ const submitForm4 = async (req, res) => {
     res.status(500).send("Error saving user data: " + error.message);
   }
 };
+
+const submitCertificate = async (req, res) => {
+  try {
+    const newUser = new certificateModel(req.body);
+    await newUser.save();
+    console.log("User data saved successfully:", newUser);
+    res.send({
+      message: "User data saved successfully",
+      ID: newUser._id,
+    });
+  } catch (error) {
+    console.error("Error details:", error);
+    res.status(500).send("Error saving user data: " + error.message);
+  }
+};
+
+const submitGroupCertificates = async (req, res) => { };
 
 const generatePdf = async (req, res) => {
   try {
@@ -247,7 +267,7 @@ const generatePdf3 = async (req, res) => {
     form.getTextField("signature").setText(user.signature);
     form.getTextField("nomination").setText(user.nomination);
     form.getTextField("by").setText(user.by);
- 
+
 
     const pdfBytes = await pdfDoc.save();
 
@@ -335,6 +355,54 @@ const generatePdf4 = async (req, res) => {
   }
 };
 
+const generateCertificate = async (req, res) => {
+  try {
+    const user = await certificateModel.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    const pdfPath = path.resolve(__dirname, `../templates/${req.params.certificateName}.pdf`);
+    const outputPdfPath = path.resolve(__dirname, `../temp/output_${user._id}.pdf`);
+    const imageOutputDir = path.resolve(__dirname, `../temp/images`);
+    
+    // Generate PDF
+    const existingPdfBytes = fs.readFileSync(pdfPath);
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const form = pdfDoc.getForm();
+    form.getTextField("name").setText(user.name);
+    form.getTextField("date").setText(user.date.toISOString().split("T")[0]);
+
+    const pdfBytes = await pdfDoc.save();
+    fs.writeFileSync(outputPdfPath, Buffer.from(pdfBytes));
+
+    // Convert PDF to Images
+    if (!fs.existsSync(imageOutputDir)) {
+      fs.mkdirSync(imageOutputDir);
+    }
+
+    const options = {
+      format: 'png',
+      out_dir: imageOutputDir,
+      out_prefix: 'page',
+      page: null
+    };
+
+    await pdfPoppler.convert(outputPdfPath, options);
+
+    // Serve Images
+    const imageFiles = fs.readdirSync(imageOutputDir).map(file => path.join('/temp/images', file));
+    console.log(imageFiles);
+    res.json({ images: imageFiles });
+    
+  } catch (error) {
+    res.status(500).send("Error generating or converting PDF: " + error.message);
+  }
+
+};
+
+const generateGroupCertificates = async (req, res) => { };
+
 const formData = async (req, res) => {
   const { formName } = req.params;
   try {
@@ -352,6 +420,9 @@ const formData = async (req, res) => {
       case "form4":
         formData = await formModel4.find();
         break;
+      case "certificate":
+        formData = await certificateModel.find();
+        break;
       default:
         return res.status(400).send("Invalid form name");
     }
@@ -362,15 +433,18 @@ const formData = async (req, res) => {
   }
 };
 
-
 module.exports = {
   submitForm1,
   submitForm2,
   submitForm3,
   submitForm4,
+  submitCertificate,
+  submitGroupCertificates,
   formData,
   generatePdf,
   generatePdf2,
   generatePdf3,
   generatePdf4,
+  generateCertificate,
+  generateGroupCertificates
 };

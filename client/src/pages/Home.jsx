@@ -64,6 +64,7 @@ function Home() {
               <SelectItem value="form4">
                 PROPOSAL FORM: FORMATION OF ENTITY
               </SelectItem>
+              <SelectItem value="certificate">Certificate</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
