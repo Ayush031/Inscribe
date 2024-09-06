@@ -14,14 +14,16 @@ mongoose
   .catch((err) => console.log("Database not connected", err));
 
 //middlewares
-app.use(
-  cors(
-    {
-      credentials: true,
-      origin: ["http://localhost:5173","https://inscribe-mu.vercel.app"],
-    }
-  )
-);
+// app.use(
+//   cors(
+//     {
+//       credentials: true,
+//       origin: ["http://localhost:5173","https://inscribe-mu.vercel.app"],
+//     }
+//   )
+// );
+app.use(cors({ origin: '*' }));
+
 
 // middleware
 app.use(express.json());
