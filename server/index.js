@@ -17,7 +17,7 @@ mongoose
 app.use(
   cors({
     credentials: true,
-    origin: [process.env.ORIGIN, process.env.ORIGIN2],
+    origin: [process.env.ORIGIN],
   })
 );
 
@@ -28,6 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // routes
+router.get("/", (req, res) => res.send("Backend Working"));
 app.use("/", require("./routes/authRoutes"));
 app.use("/user", require("./routes/formRoutes"));
 
